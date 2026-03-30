@@ -1,0 +1,22 @@
+# PowerShell
+*.ps1xml
+*.psd1
+*.pssc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.Pester/
+Invoke-Pester output
+
+# Project specific
+*.log
+.env
+.env.local
