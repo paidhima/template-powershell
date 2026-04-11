@@ -1,8 +1,8 @@
 # Placeholder test file - add Pester tests here
 
 BeforeAll {
-    $ModulePath = Join-Path (Split-Path -Parent $PSScriptRoot) "../../src/TemplateModule/TemplateModule.psm1"
-    if (Test-Path $ModulePath) {
+    $ModulePath = Join-Path $PSScriptRoot "../../src/TemplateModule/TemplateModule.psm1" | Resolve-Path -ErrorAction SilentlyContinue
+    if ($ModulePath) {
         Import-Module $ModulePath -Force
     }
 }
