@@ -1,0 +1,48 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint_and_test:
+    name: Lint and Test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+          Install-Module -Name Pester -MinimumVersion 5.0 -Force -Scope CurrentUser
+
+      - name: Lint (PSScriptAnalyzer)
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path src/ -Recurse -Severity Warning
+          if ($results) {
+              $results | Format-Table -AutoSize
+              throw "PSScriptAnalyzer found $($results.Count) issue(s)"
+          }
+          Write-Host "No issues found"
+
+      - name: Tests (Pester)
+        shell: pwsh
+        run: |
+          $config = New-PesterConfiguration
+          $config.Run.Path = "tests/"
+          $config.Output.Verbosity = "Detailed"
+          $config.Run.Exit = $true
+          Invoke-Pester -Configuration $config
