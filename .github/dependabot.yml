@@ -4,4 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github_actions"
+    commit-message:
+      prefix: "build(deps)"
     open-pull-requests-limit: 5
